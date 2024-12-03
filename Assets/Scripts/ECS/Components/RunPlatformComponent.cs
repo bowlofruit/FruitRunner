@@ -4,5 +4,6 @@
 	{
 		public float Width;
 		public float Length;
+		public float FrequensySpawnTime;
 	}
 }
