@@ -6,8 +6,6 @@ namespace ECS.Adapters
 {
 	public class SpawnFrequencyAdapter : EntityBaseComponent<SpawnFrequencyComponent>
 	{
-		[SerializeField] private float _width;
-		[SerializeField] private float _length;
 		[SerializeField] private float _frequencySpawnTime;
 
 		public override void Install(World world, Entity entity)
