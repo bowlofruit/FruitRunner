@@ -13,7 +13,7 @@ namespace ECS.Adapters
 			base.Install(world, entity);
 
 			ref var component = ref Entity.Get<PositionComponent>();
-			component.Position = _position;
+			component.Value = _position;
 		}
 	}
 }
