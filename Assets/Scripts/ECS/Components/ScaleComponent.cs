@@ -2,8 +2,8 @@
 {
 	public struct ScaleComponent
 	{
-		public float ScaleX;
-		public float ScaleY;
-		public float ScaleZ;
+		public float X;
+		public float Y;
+		public float Z;
 	}
 }

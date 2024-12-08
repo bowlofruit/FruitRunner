@@ -6,7 +6,6 @@ namespace ECS.Adapters
 {
 	public class FruitAdapter : EntityBaseComponent<FruitComponent>
 	{
-		[SerializeField] private Color _color;
 		[SerializeField] private int _price;
 
 		public override void Install(World world, Entity entity)

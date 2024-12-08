@@ -4,16 +4,22 @@ using UnityEngine;
 
 namespace ECS.Adapters
 {
+	enum GeneratedObjectType
+	{
+		Interactable,
+		NonInteractable
+	}
+
 	public class EnvironmentObjectAdapter : EntityBaseComponent<EnvironmentObjectComponent>
 	{
-		[SerializeField] private int _type;
+		[SerializeField] private GeneratedObjectType _type;
 
 		public override void Install(World world, Entity entity)
 		{
 			base.Install(world, entity);
 
 			ref var component = ref Entity.Get<EnvironmentObjectComponent>();
-			component.Type = _type;
+			component.Type = (int)_type;
 		}
 	}
 }

@@ -12,9 +12,7 @@ namespace ECS.Systems
 
 		public PlayerMovementCalculateSystem(World world, PlayerInputService inputService)
 			: base(world.GetEntities()
-				  .With<PositionComponent>()
 				  .With<PlayerComponent>()
-				  .With<SpeedComponent>()
 				  .AsSet())
 		{
 			_inputService = inputService;
@@ -28,7 +26,7 @@ namespace ECS.Systems
 			Vector2 input = _inputService.MoveInput;
 
 			Vector3 direction = new Vector3(input.x, 0, 0);
-			position.Value += direction * deltaTime * speed.Value;
+			position.Value += deltaTime * speed.Value * direction;
 		}
 	}
 }

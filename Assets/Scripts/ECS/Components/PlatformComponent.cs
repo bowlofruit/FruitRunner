@@ -1,6 +1,6 @@
 ﻿namespace ECS.Components
 {
-	public struct EnvironmentComponent
+	public struct PlatformComponent
 	{
 		public int MaxObjects;
 	}
