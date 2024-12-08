@@ -11,16 +11,16 @@ namespace Utils
 		private readonly Transform _parent;
 		private readonly DiContainer _container;
 
-		public GameObjectPool(DiContainer content, GameObject prefab, int initialCapacity = 10, Transform parent = null)
+		public GameObjectPool(DiContainer container, GameObject prefab, int initialCapacity = 10, Transform parent = null)
 		{
 			_prefab = prefab;
 			_parent = parent;
 			_pool = new Stack<GameObject>(initialCapacity);
-			_container = content;
+			_container = container;
 
 			for (int i = 0; i < initialCapacity; i++)
 			{
-				GameObject obj = _container.InstantiatePrefab(_prefab, _parent.position, Quaternion.identity, _parent);
+				var obj = _container.InstantiatePrefab(_prefab, _parent.position, Quaternion.identity, _parent);
 				obj.SetActive(false);
 				_pool.Push(obj);
 			}
@@ -30,15 +30,12 @@ namespace Utils
 		{
 			if (_pool.Count > 0)
 			{
-				GameObject obj = _pool.Pop();
+				var obj = _pool.Pop();
 				obj.SetActive(true);
 				return obj;
 			}
-			else
-			{
-				GameObject obj = _container.InstantiatePrefab(_prefab, _parent);
-				return obj;
-			}
+
+			return _container.InstantiatePrefab(_prefab, _parent.position, Quaternion.identity, _parent);
 		}
 
 		public void Return(GameObject obj)

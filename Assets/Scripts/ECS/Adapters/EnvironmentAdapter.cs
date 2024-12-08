@@ -7,6 +7,7 @@ namespace ECS.Adapters
 	public class EnvironmentAdapter : EntityBaseComponent<EnvironmentComponent>
 	{
 		[SerializeField] private int _maxObjects;
+		[SerializeField] private Vector3[] _positions;
 
 		public override void Install(World world, Entity entity)
 		{

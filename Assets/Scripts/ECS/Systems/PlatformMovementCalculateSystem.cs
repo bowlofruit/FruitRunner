@@ -8,8 +8,8 @@ namespace ECS.Systems
 	{
 		public PlatformMovementCalculateSystem(World world)
 			: base(world.GetEntities()
-					.With<PlatformComponent>()
 					.With<PositionComponent>()
+					.Without<PlayerComponent>()
 					.With<SpeedComponent>()
 					.AsSet())
 			{

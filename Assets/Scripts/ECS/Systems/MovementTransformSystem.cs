@@ -4,9 +4,9 @@ using ECS.Components;
 
 namespace ECS.Systems
 {
-	public class PlayerMovementTransformSystem : AEntitySetSystem<float>
+	public class MovementTransformSystem : AEntitySetSystem<float>
 	{
-		public PlayerMovementTransformSystem(World world)
+		public MovementTransformSystem(World world)
 			: base(world.GetEntities()
 				  .With<PositionComponent>()
 				  .With<TransformComponent>()

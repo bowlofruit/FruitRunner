@@ -89,3 +89,65 @@ public class InfinitePathGenerationSystem : AEntitySetSystem<float>
 		return 0f;
 	}
 }
+
+public class EnvironmentSpawnSystem : AEntitySetSystem<float>
+{
+	private readonly World _world;
+	private readonly GameObjectPool _fruitPool;
+	private readonly GameObjectPool _obstaclePool;
+
+	public EnvironmentSpawnSystem(World world, GameObjectPool fruitPool, GameObjectPool obstaclePool)
+		: base(world.GetEntities()
+			  .With<PlatformComponent>()
+			  .AsSet())
+	{
+		_world = world;
+		_fruitPool = fruitPool;
+		_obstaclePool = obstaclePool;
+	}
+
+	protected override void Update(float deltaTime, in Entity platformEntity)
+	{
+		ref var platform = ref platformEntity.Get<PlatformComponent>();
+
+		if (platform.ActiveObjects == null || platform.ActiveObjects.Length != platform.ObjectPositions.Length)
+		{
+			platform.ActiveObjects = new Entity[platform.ObjectPositions.Length];
+		}
+
+		for (int i = 0; i < platform.ObjectPositions.Length && i < platform.MaxObjects; i++)
+		{
+			if (!platform.ActiveObjects[i].IsAlive)
+			{
+				var useFruit = i % 2 == 0;
+
+				GameObject obj = useFruit ? _fruitPool.Get() : _obstaclePool.Get();
+				obj.transform.position = platform.ObjectPositions[i];
+
+				var entity = _world.CreateEntity();
+				if (useFruit)
+				{
+					entity.Set(new FruitComponent { Price = Random.Range(1, 10) });
+				}
+				else
+				{
+					entity.Set(new ObstacleComponent { IsDeadly = true });
+				}
+
+				entity.Set(new GameObjectComponent { Value = obj });
+				entity.Set(new PositionComponent { Value = platform.ObjectPositions[i] });
+
+				platform.ActiveObjects[i] = entity;
+			}
+			else
+			{
+				ref var position = ref platform.ActiveObjects[i].Get<PositionComponent>();
+				position.Value = platform.ObjectPositions[i];
+
+				var obj = platform.ActiveObjects[i].Get<GameObjectComponent>().Value;
+				obj.transform.position = platform.ObjectPositions[i];
+				obj.SetActive(true);
+			}
+		}
+	}
+}

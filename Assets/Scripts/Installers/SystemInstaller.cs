@@ -15,7 +15,7 @@ public class SystemInstaller : MonoInstaller
 
 	private ISystem<float> CreateFixedUpdateSystem => new SequentialSystem<float>
 	(
-		new PlayerMovementTransformSystem(_world)
+		new MovementTransformSystem(_world)
 	);
 
 	private ISystem<float> CreateUpdateSystem => new SequentialSystem<float>
@@ -23,7 +23,8 @@ public class SystemInstaller : MonoInstaller
 		new PlayerMovementCalculateSystem(_world, _playerInputService),
 		new PlatformMovementCalculateSystem(_world),
 		new InfinitePathGenerationSystem(_world, _pathPool),
-		new PathCleanupSystem(_world, _pathPool)
+		new PathCleanupSystem(_world, _pathPool),
+		new ColliderSystem(_world)
 	);
 
 	private ISystem<float> CreateLateUpdateSystem => new SequentialSystem<float>

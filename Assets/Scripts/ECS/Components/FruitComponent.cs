@@ -2,6 +2,6 @@
 {
 	public struct FruitComponent
 	{
-		public int Price;              
+		public int Price;
 	}
 }
