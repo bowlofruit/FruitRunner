@@ -21,6 +21,19 @@ namespace ECS.Adapters
             {
 				component.ObjectPositions[i] = _positions[i].position;
             }
+
+			component.ActiveObjects = new Entity[_positions.Length];
+
+			component.IsLast = true;
         }
+
+		private void Update()
+		{
+			ref var component = ref Entity.Get<PlatformComponent>();
+			for (int i = 0; i < _positions.Length; i++)
+			{
+				component.ObjectPositions[i] = _positions[i].position;
+			}
+		}
 	}
 }

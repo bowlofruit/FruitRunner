@@ -10,5 +10,7 @@ namespace ECS.Components
 		public int MaxObjects;
 		public Vector3[] ObjectPositions;
 		public Entity[] ActiveObjects;
+		public bool IsLast;
+		public bool IsObjectInit;
 	}
 }

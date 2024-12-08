@@ -6,11 +6,11 @@ using Utils;
 
 public class PathCleanupSystem : AEntitySetSystem<float>
 {
-	private readonly GameObjectPool _pathPool;
+	private readonly IPlatformPool _pathPool;
 	private const float CLEANUP_THRESHOLD = 2f;
 	private Vector3 _playerPosition;
 
-	public PathCleanupSystem(World world, GameObjectPool pathPool)
+	public PathCleanupSystem(World world, IPlatformPool pathPool)
 		: base(world.GetEntities()
 			  .With<PlatformComponent>()
 			  .With<GameObjectComponent>()
@@ -30,10 +30,22 @@ public class PathCleanupSystem : AEntitySetSystem<float>
 	{
 		ref var position = ref entity.Get<PositionComponent>();
 		ref var gameObjectComponent = ref entity.Get<GameObjectComponent>();
+		ref var platform = ref entity.Get<PlatformComponent>();
 
 		if (position.Value.z < _playerPosition.z - CLEANUP_THRESHOLD)
 		{
 			Debug.Log($"Platform at Z: {position.Value.z} is out of bounds and will be returned to the pool.");
+
+			foreach (var activeEntity in platform.ActiveObjects)
+			{
+				if (activeEntity.IsAlive)
+				{
+					var obj = activeEntity.Get<GameObjectComponent>().Value;
+					obj.SetActive(false);
+					activeEntity.Dispose();
+				}
+			}
+
 			_pathPool.Return(gameObjectComponent.Value);
 			entity.Dispose();
 		}

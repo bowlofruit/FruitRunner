@@ -123,54 +123,8 @@ Transform:
   - {fileID: 7649638178791029116}
   - {fileID: 5754631912713664287}
   - {fileID: 1522196501958185075}
-  - {fileID: 3266362824401342608}
   m_Father: {fileID: 7375125715537709321}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4057389597651987941
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3266362824401342608}
-  - component: {fileID: 183085448650043599}
-  m_Layer: 0
-  m_Name: TransformAdapter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3266362824401342608
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4057389597651987941}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1400431221235675204}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &183085448650043599
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4057389597651987941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9748275a2599fc4a9c8f3dcca7ac804, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _transform: {fileID: 7375125715537709321}
 --- !u!1 &5239903394575493221
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,7 +191,6 @@ MonoBehaviour:
   - {fileID: 5439672948831061180}
   - {fileID: 1399027078288673564}
   - {fileID: 5241846546358997887}
-  - {fileID: 183085448650043599}
 --- !u!1 &6642422617310192589
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a1ea3b284d7b54ea789ad2c4c40409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _position: {x: 0, y: 0, z: 0}
+  _transform: {fileID: 7375125715537709321}
 --- !u!1001 &6058433486824260714
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,47 +9,46 @@ namespace Installers
 		[Header("Platform")]
 		[SerializeField] private GameObject _platformPrefab;
 		[SerializeField] private Transform _platformParent;
-		[SerializeField] private int _prefabCount;
+		[SerializeField] private int _platformPoolCount;
 
 		[Header("Fruits")]
 		[SerializeField] private GameObject[] _fruitPrefabs;
 		[SerializeField] private Transform _fruitParent;
-		[SerializeField] private int _fruitPrefabCount;
+		[SerializeField] private int _fruitPoolCount;
 
 		[Header("Obstacles")]
 		[SerializeField] private GameObject[] _obstaclePrefabs;
 		[SerializeField] private Transform _obstacleParent;
-		[SerializeField] private int _obstaclePrefabCount;
+		[SerializeField] private int _obstaclePoolCount;
 
 		public override void InstallBindings()
 		{
-			BindPathSegmentPool();
-			BindFruitPools();
-			BindObstaclePools();
+			Debug.Log("Installing object pools...");
+
+			BindPlatformPool();
+			BindFruitPool();
+			BindObstaclePool();
 		}
 
-		private void BindFruitPools()
+		private void BindPlatformPool()
 		{
-			foreach (var prefab in _fruitPrefabs)
-			{
-				var fruitPool = new GameObjectPool(Container, prefab, _fruitPrefabCount, _fruitParent);
-				Container.Bind<GameObjectPool>().WithId("Fruit").FromInstance(fruitPool).AsSingle().NonLazy();
-			}
+			var platformPool = new GameObjectPool(Container, new[] { _platformPrefab }, _platformPoolCount, _platformParent);
+			Container.Bind<IPlatformPool>().FromInstance(platformPool).AsSingle();
+			Debug.Log("Platform pool bound.");
 		}
 
-		private void BindObstaclePools()
+		private void BindFruitPool()
 		{
-			foreach (var prefab in _obstaclePrefabs)
-			{
-				var obstaclePool = new GameObjectPool(Container, prefab, _obstaclePrefabCount, _obstacleParent);
-				Container.Bind<GameObjectPool>().WithId("Obstacle").FromInstance(obstaclePool).AsSingle().NonLazy();
-			}
+			var fruitPool = new GameObjectPool(Container, _fruitPrefabs, _fruitPoolCount, _fruitParent);
+			Container.Bind<IFruitPool>().FromInstance(fruitPool).AsSingle();
+			Debug.Log("Fruit pool bound.");
 		}
 
-		private void BindPathSegmentPool()
+		private void BindObstaclePool()
 		{
-			var pathSegmentPool = new GameObjectPool(Container, _platformPrefab, _prefabCount, _platformParent.transform);
-			Container.Bind<GameObjectPool>().WithId("PathSegment").FromInstance(pathSegmentPool).AsSingle().NonLazy();
+			var obstaclePool = new GameObjectPool(Container, _obstaclePrefabs, _obstaclePoolCount, _obstacleParent);
+			Container.Bind<IObstaclePool>().FromInstance(obstaclePool).AsSingle();
+			Debug.Log("Obstacle pool bound.");
 		}
 	}
 }
