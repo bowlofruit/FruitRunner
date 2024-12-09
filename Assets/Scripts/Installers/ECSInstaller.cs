@@ -1,6 +1,4 @@
 ﻿using DefaultEcs;
-using ECS.Components;
-using Utils;
 using Zenject;
 
 namespace Installers

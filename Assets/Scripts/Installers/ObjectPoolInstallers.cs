@@ -11,6 +11,16 @@ namespace Installers
 		[SerializeField] private Transform _platformParent;
 		[SerializeField] private int _platformPoolCount;
 
+		[Header("Environment")]
+		[SerializeField] private GameObject _environmentPrefab;
+		[SerializeField] private Transform _environmentParent;
+		[SerializeField] private int _environmentPoolCount;
+
+		[Header("EnvironmentObjects")]
+		[SerializeField] private GameObject[] _environmentObjectsPrefabs;
+		[SerializeField] private Transform _environmentObjectsParent;
+		[SerializeField] private int _environmentObjectsPoolCount;
+
 		[Header("Fruits")]
 		[SerializeField] private GameObject[] _fruitPrefabs;
 		[SerializeField] private Transform _fruitParent;
@@ -25,10 +35,27 @@ namespace Installers
 		{
 			Debug.Log("Installing object pools...");
 
+			BindEnvironmentPlatformPool();
+			BindEnvironmentObjectsPlatformPool();
 			BindPlatformPool();
 			BindFruitPool();
 			BindObstaclePool();
 		}
+
+		private void BindEnvironmentPlatformPool()
+		{
+			var environmentPlatformPool = new GameObjectPool(Container, new[] { _environmentPrefab }, _environmentPoolCount, _environmentParent);
+			Container.Bind<IEnvironmentPlatformPool>().FromInstance(environmentPlatformPool).AsSingle();
+			Debug.Log("Platform pool bound.");
+		}
+
+		private void BindEnvironmentObjectsPlatformPool()
+		{
+			var environmentPlatformObjectsPool = new GameObjectPool(Container, _environmentObjectsPrefabs, _environmentObjectsPoolCount, _environmentObjectsParent);
+			Container.Bind<IEnviromentObjectsPool>().FromInstance(environmentPlatformObjectsPool).AsSingle();
+			Debug.Log("Platform pool bound.");
+		}
+
 
 		private void BindPlatformPool()
 		{

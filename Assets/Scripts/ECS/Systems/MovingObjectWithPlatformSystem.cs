@@ -6,7 +6,8 @@ public class MovingObjectWithPlatformSystem : AEntitySetSystem<float>
 {
 	public MovingObjectWithPlatformSystem(World world)
 		: base(world.GetEntities()
-			  .With<PlatformComponent>()
+			  .With<PlatformObjectComponent>()
+			  .With<PositionComponent>()
 			  .AsSet())
 	{
 
@@ -14,13 +15,17 @@ public class MovingObjectWithPlatformSystem : AEntitySetSystem<float>
 
 	protected override void Update(float deltaTime, in Entity entity)
 	{
-		ref var platformComponent = ref entity.Get<PlatformComponent>();
+		if (!entity.IsAlive) return;
 
-		if (!platformComponent.IsObjectInit) return;
+		var platform = entity.Get<PlatformObjectComponent>().Platform;
 
-        for (int i = 0; i < platformComponent.ObjectPositions.Length && i < platformComponent.MaxObjects; i++)
-        {
-			platformComponent.ActiveObjects[i].Get<PositionComponent>().Value = platformComponent.ObjectPositions[i];
-        }
-    }
+		if (!platform.IsAlive) return;
+
+		if (platform.Has<SpeedComponent>())
+		{
+			var speed = platform.Get<SpeedComponent>().Value;
+			entity.Get<PositionComponent>().Value += new UnityEngine.Vector3(0, 0, -(speed * deltaTime));
+		}
+
+	}
 }

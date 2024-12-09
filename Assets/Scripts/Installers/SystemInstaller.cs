@@ -1,6 +1,5 @@
 using DefaultEcs;
 using DefaultEcs.System;
-using ECS.Components;
 using ECS.Systems;
 using Installers.Updaters;
 using Services;
@@ -16,6 +15,8 @@ public class SystemInstaller : MonoInstaller
 	private IPlatformPool _pathPool;
 	private IFruitPool _fruitPool;
 	private IObstaclePool _obstaclePool;
+	private IEnviromentObjectsPool _enviromentObjectsPool;
+	private IEnvironmentPlatformPool _enviromentPlatformPool;
 
 	private ISystem<float> CreateFixedUpdateSystem => new SequentialSystem<float>(
 		
@@ -24,10 +25,12 @@ public class SystemInstaller : MonoInstaller
 	private ISystem<float> CreateUpdateSystem => new SequentialSystem<float>(
 		new PlayerMovementCalculateSystem(_world, _playerInputService),
 		new PlatformMovementCalculateSystem(_world),
-		new ColliderSystem(_world),
-		new InfinitePathGenerationSystem(_world, _pathPool),
-		new PathCleanupSystem(_world, _pathPool),
-		new EnvironmentSpawnSystem(_world, _fruitPool, _obstaclePool),
+		new MovementDistancePlatformCalculateSystem(_world),
+		new ColliderSystem(_world, _fruitPool, _obstaclePool),
+		new InfinitePathGenerationSystem(_world, _pathPool, _enviromentPlatformPool),
+		new PathCleanupSystem(_world, _pathPool, _enviromentPlatformPool),
+		new PathObjectsCleanupSystem(_world, _fruitPool, _obstaclePool), 
+		new EnvironmentSpawnSystem(_world, _fruitPool, _obstaclePool, _enviromentObjectsPool),
 		new MovingObjectWithPlatformSystem(_world)
 	);
 
@@ -38,13 +41,17 @@ public class SystemInstaller : MonoInstaller
 						   PlayerInputService playerInputService,
 						   IPlatformPool pathPool,
 						   IFruitPool fruitPool,
-						   IObstaclePool obstaclePool)
+						   IObstaclePool obstaclePool,
+						   IEnvironmentPlatformPool environmentPlatformPool,
+						   IEnviromentObjectsPool enviromentObjectsPool)
 	{
 		_world = world;
 		_playerInputService = playerInputService;
 		_fruitPool = fruitPool;
 		_obstaclePool = obstaclePool;
 		_pathPool = pathPool;
+		_enviromentObjectsPool = enviromentObjectsPool;
+		_enviromentPlatformPool = environmentPlatformPool;
 
 		Debug.Log("SystemInstaller constructed with dependencies.");
 	}

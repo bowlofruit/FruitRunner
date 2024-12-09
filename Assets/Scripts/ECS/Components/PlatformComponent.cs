@@ -1,16 +1,17 @@
-﻿using DefaultEcs;
+﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
+using ECS.Adapters;
 
-namespace ECS.Components
+[Serializable]
+public struct PlatformComponent
 {
-	[Serializable]
-	public struct PlatformComponent
-	{
-		public int MaxObjects;
-		public Vector3[] ObjectPositions;
-		public Entity[] ActiveObjects;
-		public bool IsLast;
-		public bool IsObjectInit;
-	}
+	public int MaxObjects;
+	public Dictionary<int, Vector3> ObjectPositions;
+	public HashSet<int> OccupiedPositions;
+	public Dictionary<int, InteractableObjectType> ObjectTypes;
+	public bool IsLast;
+	public bool IsObjectInit;
+	public float MovementDistance;
+	public PlatformType PlatformType;
 }

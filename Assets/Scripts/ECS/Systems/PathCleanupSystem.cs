@@ -7,61 +7,66 @@ using Utils;
 public class PathCleanupSystem : AEntitySetSystem<float>
 {
 	private readonly IPlatformPool _pathPool;
-	private const float CLEANUP_THRESHOLD = 2f;
-	private Vector3 _playerPosition;
+	private readonly IEnvironmentPlatformPool _environmentPlatformPool;
+	private const float CLEANUP_THRESHOLD = 1f;
 
-	public PathCleanupSystem(World world, IPlatformPool pathPool)
+	public PathCleanupSystem(World world, IPlatformPool pathPool, IEnvironmentPlatformPool environmentPlatformPool)
 		: base(world.GetEntities()
 			  .With<PlatformComponent>()
 			  .With<GameObjectComponent>()
 			  .With<PositionComponent>()
+			  .With<ScaleComponent>()
 			  .AsSet())
 	{
 		_pathPool = pathPool;
-		_playerPosition = Vector3.zero;
-	}
-
-	protected override void PostUpdate(float deltaTime)
-	{
-		_playerPosition += new Vector3(0, 0, GetPlatformVelocity() * deltaTime);
+		_environmentPlatformPool = environmentPlatformPool;
 	}
 
 	protected override void Update(float deltaTime, in Entity entity)
 	{
-		ref var position = ref entity.Get<PositionComponent>();
-		ref var gameObjectComponent = ref entity.Get<GameObjectComponent>();
-		ref var platform = ref entity.Get<PlatformComponent>();
-
-		if (position.Value.z < _playerPosition.z - CLEANUP_THRESHOLD)
+		if (!entity.IsAlive)
 		{
-			Debug.Log($"Platform at Z: {position.Value.z} is out of bounds and will be returned to the pool.");
+			Debug.LogWarning("Entity is not alive, skipping cleanup.");
+			return;
+		}
 
-			foreach (var activeEntity in platform.ActiveObjects)
+		ref var platform = ref entity.Get<PlatformComponent>();
+		ref var gameObject = ref entity.Get<GameObjectComponent>();
+
+		var length = entity.Get<ScaleComponent>().Z;
+
+		Debug.Log($"Checking platform for cleanup: PlatformType = {platform.PlatformType}, MovementDistance = {platform.MovementDistance}, Length = {length}, Threshold = {length * CLEANUP_THRESHOLD}");
+
+		if (platform.MovementDistance > length * CLEANUP_THRESHOLD && !platform.IsLast)
+		{
+			Debug.Log($"Cleaning platform of type {platform.PlatformType}. Position: {entity.Get<PositionComponent>().Value}");
+
+			switch (platform.PlatformType)
 			{
-				if (activeEntity.IsAlive)
-				{
-					var obj = activeEntity.Get<GameObjectComponent>().Value;
-					obj.SetActive(false);
-					activeEntity.Dispose();
-				}
+				case PlatformType.Interactable:
+					Debug.Log("Returning platform to the interactable pool.");
+					_pathPool.Return(gameObject.Value);
+					break;
+
+				case PlatformType.NonInteractable:
+					Debug.Log("Returning platform to the non-interactable pool.");
+					_environmentPlatformPool.Return(gameObject.Value);
+					break;
+
+				default:
+					Debug.LogError("Unknown PlatformType encountered during cleanup.");
+					break;
 			}
 
-			_pathPool.Return(gameObjectComponent.Value);
-			entity.Dispose();
-		}
-	}
+			Debug.Log($"Clearing occupied positions. Count: {platform.OccupiedPositions.Count}");
+			platform.OccupiedPositions.Clear();
 
-	private float GetPlatformVelocity()
-	{
-		foreach (var entity in World.GetEntities()
-			.With<PlatformComponent>()
-			.With<SpeedComponent>()
-			.AsEnumerable())
+			Debug.LogWarning($"Platform cleanup completed for PlatformType: {platform.PlatformType}");
+		}
+		else
 		{
-			var speed = entity.Get<SpeedComponent>();
-			return speed.Value;
+			Debug.Log("Platform does not meet cleanup criteria.");
 		}
-
-		return 0f;
 	}
+
 }

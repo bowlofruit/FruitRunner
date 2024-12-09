@@ -1,4 +1,6 @@
-﻿namespace ECS.Components
+﻿using DefaultEcs;
+
+namespace ECS.Components
 {
 	public struct ColliderComponent
 	{

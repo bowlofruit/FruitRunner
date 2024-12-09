@@ -2,28 +2,30 @@
 using DefaultEcs.System;
 using ECS.Components;
 using UnityEngine;
+using Utils;
 
 public class ColliderSystem : AEntitySetSystem<float>
 {
 	private readonly World _world;
+	private readonly IFruitPool _fruitPool;
+	private readonly IObstaclePool _obstaclePool;
 
-	public ColliderSystem(World world)
+	public ColliderSystem(World world, IFruitPool fruitPool, IObstaclePool obstaclePool)
 		: base(world.GetEntities()
 				.With<ColliderComponent>()
 				.With<PositionComponent>()
+				.With<PlayerComponent>()
 				.AsSet())
 	{
 		_world = world;
+		_fruitPool = fruitPool;
+		_obstaclePool = obstaclePool;
 		Debug.Log("ColliderSystem initialized.");
 	}
 
 	protected override void Update(float deltaTime, in Entity playerEntity)
 	{
-		if (!playerEntity.Has<PlayerComponent>())
-		{
-			Debug.LogWarning("Player entity does not have PlayerComponent. Skipping...");
-			return;
-		}
+		if (!playerEntity.IsAlive) return;
 
 		ref var playerCollider = ref playerEntity.Get<ColliderComponent>();
 		ref var playerPosition = ref playerEntity.Get<PositionComponent>();
@@ -69,7 +71,11 @@ public class ColliderSystem : AEntitySetSystem<float>
 
 			player.CollectedFruits += fruit.Price;
 
-			otherEntity.Dispose();
+			if (otherEntity.Has<GameObjectComponent>())
+			{
+				_fruitPool.Return(otherEntity.Get<GameObjectComponent>().Value);
+			}
+
 			Debug.Log("Fruit entity disposed.");
 		}
 		else if (otherEntity.Has<ObstacleComponent>())
@@ -80,11 +86,16 @@ public class ColliderSystem : AEntitySetSystem<float>
 			if (obstacle.IsDeadly)
 			{
 				player.IsDead = true;
-				Debug.LogError("Player hit a deadly obstacle! Game Over.");
+				Debug.Log("Player hit a deadly obstacle! Game Over.");
 			}
 			else
 			{
 				Debug.Log("Player hit a harmless obstacle.");
+			}
+
+			if (otherEntity.Has<GameObjectComponent>())
+			{
+				_obstaclePool.Return(otherEntity.Get<GameObjectComponent>().Value);
 			}
 		}
 	}

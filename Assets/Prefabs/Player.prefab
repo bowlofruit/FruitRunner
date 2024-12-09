@@ -174,6 +174,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collectedFruits: 0
   _isDead: 0
+--- !u!1 &3625460085062491994
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4459178422529969122}
+  - component: {fileID: 8888425130968644782}
+  m_Layer: 0
+  m_Name: GameObjectAdapter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4459178422529969122
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3625460085062491994}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 50, y: 0.56, z: 43.35}
+  m_LocalScale: {x: 1, y: 1, z: 0.099999994}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4945782131077900223}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8888425130968644782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3625460085062491994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b743f60a987f02541bc8211e60708601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameObject: {fileID: 5743082569966122119}
 --- !u!1 &4725614990279758751
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,6 +330,7 @@ MonoBehaviour:
   - {fileID: 5638172925976548034}
   - {fileID: 2945925214067099250}
   - {fileID: 6020017666565810665}
+  - {fileID: 8888425130968644782}
 --- !u!1 &7314183756894406534
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +405,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4459178422529969122}
   - {fileID: 3338860222390004548}
   - {fileID: 8768478616407384129}
   - {fileID: 5988326780733607769}

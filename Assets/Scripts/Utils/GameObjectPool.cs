@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Utils
 {
-	public class GameObjectPool : IFruitPool, IObstaclePool, IPlatformPool
+	public class GameObjectPool : IFruitPool, IObstaclePool, IPlatformPool, IEnvironmentPlatformPool, IEnviromentObjectsPool
 	{
 		private readonly Stack<GameObject> _pool;
 		private readonly GameObject[] _prefabs;
