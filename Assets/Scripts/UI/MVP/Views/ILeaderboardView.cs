@@ -2,6 +2,8 @@
 {
 	public interface ILeaderboardView
 	{
-		public void DisplayScores(string scores);
+		public void ShowScores();
+		public void HideScores();
+		public void SyncScores(string scores);
 	}
 }

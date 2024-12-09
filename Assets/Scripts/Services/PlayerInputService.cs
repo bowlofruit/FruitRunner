@@ -1,11 +1,15 @@
 ﻿using InputSystem;
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Services
 {
-	public class PlayerInputService
+	public class PlayerInputService : IDisposable
 	{
 		private PlayerInputAction _action;
+
+		public static Action OnDipsoseInputService;
 
         public Vector2 MoveInput => _action.Player.Move.ReadValue<Vector2>();
 
@@ -13,11 +17,13 @@ namespace Services
         {
             _action = new PlayerInputAction();
             _action.Enable();
+			OnDipsoseInputService = Dispose;
         }
 
-        public void Disable()
-        {
-            _action.Disable();
-        }
-    }
+		public void Dispose()
+		{
+			_action.Disable();
+			_action = null;
+		}
+	}
 }

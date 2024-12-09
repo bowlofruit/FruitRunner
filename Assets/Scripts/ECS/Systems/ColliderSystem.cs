@@ -13,8 +13,14 @@ public class ColliderSystem : AEntitySetSystem<float>
 	private readonly IObstaclePool _obstaclePool;
 	private readonly ScorePresenter _scorePresenter;
 	private readonly LeaderboardPresenter _leaderboardPresenter;
+	private readonly MainMenuPresenter _mainMenuPresenter;
 
-	public ColliderSystem(World world, IFruitPool fruitPool, IObstaclePool obstaclePool, ScorePresenter scorePresenter, LeaderboardPresenter leaderboardPresenter)
+	public ColliderSystem(World world,
+					   IFruitPool fruitPool,
+					   IObstaclePool obstaclePool,
+					   ScorePresenter scorePresenter,
+					   LeaderboardPresenter leaderboardPresenter,
+					   MainMenuPresenter mainMenuPresenter)
 		: base(world.GetEntities()
 				.With<ColliderComponent>()
 				.With<PositionComponent>()
@@ -25,8 +31,11 @@ public class ColliderSystem : AEntitySetSystem<float>
 		_fruitPool = fruitPool;
 		_obstaclePool = obstaclePool;
 		_scorePresenter = scorePresenter;
-		Debug.Log("ColliderSystem initialized.");
 		_leaderboardPresenter = leaderboardPresenter;
+		_mainMenuPresenter = mainMenuPresenter;
+
+		Debug.Log("ColliderSystem initialized.");
+
 	}
 
 	protected override void Update(float deltaTime, in Entity playerEntity)
@@ -96,6 +105,12 @@ public class ColliderSystem : AEntitySetSystem<float>
 
 				player.IsDead = true;
 				Debug.Log("Player hit a deadly obstacle! Game Over.");
+
+				SystemInstaller.TimeFreezer.Invoke(true);
+
+				_mainMenuPresenter.ShowLoseMenu();
+
+
 
 				_leaderboardPresenter.AddScore(player.CollectedFruits);
 			}

@@ -7,8 +7,9 @@ public class PathObjectsCleanupSystem : AEntitySetSystem<float>
 {
 	private readonly IFruitPool _fruitPool;
 	private readonly IObstaclePool _obstaclesPool;
+	private readonly IEnviromentObjectsPool _enviromentObjectsPool;
 
-	public PathObjectsCleanupSystem(World world, IFruitPool fruitPool, IObstaclePool obstaclePool)
+	public PathObjectsCleanupSystem(World world, IFruitPool fruitPool, IObstaclePool obstaclePool, IEnviromentObjectsPool enviromentObjectsPool)
 		: base(world.GetEntities()
 			  .With<GameObjectComponent>()
 			  .With<PlatformObjectComponent>()
@@ -16,6 +17,7 @@ public class PathObjectsCleanupSystem : AEntitySetSystem<float>
 	{
 		_fruitPool = fruitPool;
 		_obstaclesPool = obstaclePool;
+		_enviromentObjectsPool = enviromentObjectsPool;
 	}
 
 	protected override void Update(float deltaTime, in Entity entity)
@@ -33,6 +35,10 @@ public class PathObjectsCleanupSystem : AEntitySetSystem<float>
 		else if (entity.Has<ObstacleComponent>())
 		{
 			_obstaclesPool.Return(gameObject.Value);
+		}
+		else
+		{
+			_enviromentObjectsPool.Return(gameObject.Value);
 		}
 	}
 }

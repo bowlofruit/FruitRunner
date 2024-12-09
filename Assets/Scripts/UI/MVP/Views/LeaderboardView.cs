@@ -5,11 +5,21 @@ namespace MVP.Views
 {
 	public class LeaderboardView : MonoBehaviour, ILeaderboardView
 	{
-		[SerializeField] private TMP_Text leaderboardText;
+		[SerializeField] private TMP_Text _leaderboardText;
 
-		public void DisplayScores(string scores)
+		public void HideScores()
 		{
-			leaderboardText.text = scores;
+			_leaderboardText.gameObject.SetActive(false);
+		}
+
+		public void ShowScores()
+		{
+			_leaderboardText.gameObject.SetActive(true);
+		}
+
+		public void SyncScores(string scores)
+		{
+			_leaderboardText.text = scores;
 		}
 	}
 }

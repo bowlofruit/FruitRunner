@@ -1,39 +1,63 @@
-﻿using MVP.Models;
-using MVP.Views;
+﻿using MVP.Views;
+using Services;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace MVP.Presenters
 {
 	public class MainMenuPresenter
 	{
-		private readonly MainMenuModel _model;
 		private readonly IMainMenuView _view;
+		private readonly LeaderboardPresenter _leaderboardPresenter;
 
-		public MainMenuPresenter(IMainMenuView view)
+		public MainMenuPresenter(IMainMenuView view, LeaderboardPresenter leaderboardPresenter)
 		{
-			_model = new MainMenuModel();
 			_view = view;
+			_leaderboardPresenter = leaderboardPresenter;
 
 			_view.OnStartGameClicked += HandleStartGame;
 			_view.OnLeaderboardClicked += HandleShowLeaderboard;
 			_view.OnExitClicked += HandleExitGame;
+			_view.EndGameButton += HandeBackToMenu;
+			_view.BackToMenu += HandleHideLeaderboardAndGame; 
+		}
+
+		public void ShowLoseMenu()
+		{
+			_view.ShowLoseMenu();
+		}
+
+		private void HandeBackToMenu()
+		{
+			PlayerInputService.OnDipsoseInputService.Invoke();
+			SceneManager.LoadScene(0);
+			HandleHideLeaderboardAndGame();
 		}
 
 		private void HandleStartGame()
 		{
-			_model.StartGame();
-			SceneManager.LoadScene(SceneManager.loadedSceneCount + 1);
+			SceneManager.LoadScene(1);
 		}
 
 		private void HandleShowLeaderboard()
 		{
-			_model.ShowLeaderboard();
+			_view.DisableMenu();
+			_view.EnableLeadboard();
+			_leaderboardPresenter.UpdateLeaderboardUI();
+			_leaderboardPresenter.ShowView();
+		}
 
+		private void HandleHideLeaderboardAndGame()
+		{
+			_view.DisableLeaderboard();
+			_view.HideLoseMenu();
+			_view.EnableMenu();
+			_leaderboardPresenter.HideView();
 		}
 
 		private void HandleExitGame()
 		{
-			_model.ExitGame();
+			Application.Quit();
 		}
 	}
 }

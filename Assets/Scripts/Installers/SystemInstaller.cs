@@ -4,12 +4,19 @@ using ECS.Systems;
 using Installers.Updaters;
 using MVP.Presenters;
 using Services;
+using System;
 using UnityEngine;
 using Utils;
 using Zenject;
 
 public class SystemInstaller : MonoInstaller
 {
+	public static Action<bool> TimeFreezer;
+
+	private ISystem<float> _fixedUpdateSystem;
+	private ISystem<float> _updateSystem;
+	private ISystem<float> _lateUpdateSystem;
+
 	private World _world;
 	private PlayerInputService _playerInputService;
 
@@ -21,6 +28,7 @@ public class SystemInstaller : MonoInstaller
 
 	private ScorePresenter _scorePresenter;
 	private LeaderboardPresenter _leaderboardPresenter;
+	private MainMenuPresenter _mainMenuPresenter;
 
 	private ISystem<float> CreateFixedUpdateSystem => new SequentialSystem<float>(
 		
@@ -30,10 +38,10 @@ public class SystemInstaller : MonoInstaller
 		new PlayerMovementCalculateSystem(_world, _playerInputService),
 		new PlatformMovementCalculateSystem(_world),
 		new MovementDistancePlatformCalculateSystem(_world),
-		new ColliderSystem(_world, _fruitPool, _obstaclePool, _scorePresenter, _leaderboardPresenter),
+		new ColliderSystem(_world, _fruitPool, _obstaclePool, _scorePresenter, _leaderboardPresenter, _mainMenuPresenter),
 		new InfinitePathGenerationSystem(_world, _pathPool, _enviromentPlatformPool),
 		new PathCleanupSystem(_world, _pathPool, _enviromentPlatformPool),
-		new PathObjectsCleanupSystem(_world, _fruitPool, _obstaclePool), 
+		new PathObjectsCleanupSystem(_world, _fruitPool, _obstaclePool, _enviromentObjectsPool), 
 		new EnvironmentSpawnSystem(_world, _fruitPool, _obstaclePool, _enviromentObjectsPool),
 		new MovingObjectWithPlatformSystem(_world)
 	);
@@ -49,7 +57,8 @@ public class SystemInstaller : MonoInstaller
 						   IEnvironmentPlatformPool environmentPlatformPool,
 						   IEnviromentObjectsPool enviromentObjectsPool,
 						   ScorePresenter scorePresenter,
-						   LeaderboardPresenter leaderboardPresenter)
+						   LeaderboardPresenter leaderboardPresenter,
+						   MainMenuPresenter mainMenuPresenter)
 	{
 		_world = world;
 		_playerInputService = playerInputService;
@@ -60,22 +69,41 @@ public class SystemInstaller : MonoInstaller
 		_enviromentPlatformPool = environmentPlatformPool;
 		_scorePresenter = scorePresenter;
 		_leaderboardPresenter = leaderboardPresenter;
+		_mainMenuPresenter = mainMenuPresenter;
 
 		Debug.Log("SystemInstaller constructed with dependencies.");
 	}
 
 	public override void InstallBindings()
 	{
+		_fixedUpdateSystem = CreateFixedUpdateSystem;
+		_updateSystem = CreateUpdateSystem;
+		_lateUpdateSystem = CreateLateUpdateSystem;
+
 		Container.BindInterfacesAndSelfTo<SystemFixedUpdater>()
-				 .FromInstance(new SystemFixedUpdater(CreateFixedUpdateSystem))
+				 .FromInstance(new SystemFixedUpdater(_fixedUpdateSystem))
 				 .AsSingle();
 
 		Container.BindInterfacesAndSelfTo<SystemUpdater>()
-				 .FromInstance(new SystemUpdater(CreateUpdateSystem))
+				 .FromInstance(new SystemUpdater(_updateSystem))
 				 .AsSingle();
 
 		Container.BindInterfacesAndSelfTo<SystemLateUpdater>()
-				 .FromInstance(new SystemLateUpdater(CreateLateUpdateSystem))
+				 .FromInstance(new SystemLateUpdater(_lateUpdateSystem))
 				 .AsSingle();
+
+		TimeFreezer = IsTimeFreeze;
+	}
+
+	private void OnDestroy()
+	{
+		TimeFreezer = null;
+	}
+
+	private void IsTimeFreeze(bool isFreeze)
+	{
+		_fixedUpdateSystem.IsEnabled = !isFreeze;
+		_updateSystem.IsEnabled = !isFreeze;
+		_lateUpdateSystem.IsEnabled = !isFreeze;
 	}
 }
