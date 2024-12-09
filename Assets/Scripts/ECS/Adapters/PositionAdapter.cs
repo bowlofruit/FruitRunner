@@ -7,6 +7,7 @@ namespace ECS.Adapters
 	public class PositionAdapter : EntityBaseComponent<PositionComponent>
 	{
 		[SerializeField] private Transform _transform;
+		[SerializeField] private float _XLimit;
 
 		public override void Install(World world, Entity entity)
 		{
@@ -18,7 +19,23 @@ namespace ECS.Adapters
 
 		private void Update()
 		{
-			_transform.position = Entity.Get<PositionComponent>().Value;
+			ref var component = ref Entity.Get<PositionComponent>();
+			_transform.position = component.Value;
+
+			if (_XLimit != 0)
+			{
+				if (_transform.position.x > _XLimit)
+				{
+					_transform.position = new Vector3(_XLimit, _transform.position.y, _transform.position.z);
+				}
+				else if (_transform.position.x < -_XLimit)
+				{
+					_transform.position = new Vector3(-_XLimit, _transform.position.y, _transform.position.z);
+				}
+			}
+
+			component.Value = _transform.position;
 		}
+
 	}
 }

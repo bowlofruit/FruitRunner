@@ -1,16 +1,20 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
 using ECS.Components;
+using MVP.Presenters;
 using UnityEngine;
 using Utils;
+using Zenject;
 
 public class ColliderSystem : AEntitySetSystem<float>
 {
 	private readonly World _world;
 	private readonly IFruitPool _fruitPool;
 	private readonly IObstaclePool _obstaclePool;
+	private readonly ScorePresenter _scorePresenter;
+	private readonly LeaderboardPresenter _leaderboardPresenter;
 
-	public ColliderSystem(World world, IFruitPool fruitPool, IObstaclePool obstaclePool)
+	public ColliderSystem(World world, IFruitPool fruitPool, IObstaclePool obstaclePool, ScorePresenter scorePresenter, LeaderboardPresenter leaderboardPresenter)
 		: base(world.GetEntities()
 				.With<ColliderComponent>()
 				.With<PositionComponent>()
@@ -20,7 +24,9 @@ public class ColliderSystem : AEntitySetSystem<float>
 		_world = world;
 		_fruitPool = fruitPool;
 		_obstaclePool = obstaclePool;
+		_scorePresenter = scorePresenter;
 		Debug.Log("ColliderSystem initialized.");
+		_leaderboardPresenter = leaderboardPresenter;
 	}
 
 	protected override void Update(float deltaTime, in Entity playerEntity)
@@ -71,6 +77,8 @@ public class ColliderSystem : AEntitySetSystem<float>
 
 			player.CollectedFruits += fruit.Price;
 
+			_scorePresenter.AddScore(fruit.Price);
+
 			if (otherEntity.Has<GameObjectComponent>())
 			{
 				_fruitPool.Return(otherEntity.Get<GameObjectComponent>().Value);
@@ -85,12 +93,11 @@ public class ColliderSystem : AEntitySetSystem<float>
 
 			if (obstacle.IsDeadly)
 			{
+
 				player.IsDead = true;
 				Debug.Log("Player hit a deadly obstacle! Game Over.");
-			}
-			else
-			{
-				Debug.Log("Player hit a harmless obstacle.");
+
+				_leaderboardPresenter.AddScore(player.CollectedFruits);
 			}
 
 			if (otherEntity.Has<GameObjectComponent>())

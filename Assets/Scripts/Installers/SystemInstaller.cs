@@ -2,6 +2,7 @@ using DefaultEcs;
 using DefaultEcs.System;
 using ECS.Systems;
 using Installers.Updaters;
+using MVP.Presenters;
 using Services;
 using UnityEngine;
 using Utils;
@@ -18,6 +19,9 @@ public class SystemInstaller : MonoInstaller
 	private IEnviromentObjectsPool _enviromentObjectsPool;
 	private IEnvironmentPlatformPool _enviromentPlatformPool;
 
+	private ScorePresenter _scorePresenter;
+	private LeaderboardPresenter _leaderboardPresenter;
+
 	private ISystem<float> CreateFixedUpdateSystem => new SequentialSystem<float>(
 		
 	);
@@ -26,7 +30,7 @@ public class SystemInstaller : MonoInstaller
 		new PlayerMovementCalculateSystem(_world, _playerInputService),
 		new PlatformMovementCalculateSystem(_world),
 		new MovementDistancePlatformCalculateSystem(_world),
-		new ColliderSystem(_world, _fruitPool, _obstaclePool),
+		new ColliderSystem(_world, _fruitPool, _obstaclePool, _scorePresenter, _leaderboardPresenter),
 		new InfinitePathGenerationSystem(_world, _pathPool, _enviromentPlatformPool),
 		new PathCleanupSystem(_world, _pathPool, _enviromentPlatformPool),
 		new PathObjectsCleanupSystem(_world, _fruitPool, _obstaclePool), 
@@ -43,7 +47,9 @@ public class SystemInstaller : MonoInstaller
 						   IFruitPool fruitPool,
 						   IObstaclePool obstaclePool,
 						   IEnvironmentPlatformPool environmentPlatformPool,
-						   IEnviromentObjectsPool enviromentObjectsPool)
+						   IEnviromentObjectsPool enviromentObjectsPool,
+						   ScorePresenter scorePresenter,
+						   LeaderboardPresenter leaderboardPresenter)
 	{
 		_world = world;
 		_playerInputService = playerInputService;
@@ -52,6 +58,8 @@ public class SystemInstaller : MonoInstaller
 		_pathPool = pathPool;
 		_enviromentObjectsPool = enviromentObjectsPool;
 		_enviromentPlatformPool = environmentPlatformPool;
+		_scorePresenter = scorePresenter;
+		_leaderboardPresenter = leaderboardPresenter;
 
 		Debug.Log("SystemInstaller constructed with dependencies.");
 	}
