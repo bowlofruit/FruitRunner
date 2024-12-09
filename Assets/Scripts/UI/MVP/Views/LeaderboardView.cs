@@ -1,8 +1,10 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MVP.Views
 {
+
 	public class LeaderboardView : MonoBehaviour, ILeaderboardView
 	{
 		[SerializeField] private TMP_Text _leaderboardText;

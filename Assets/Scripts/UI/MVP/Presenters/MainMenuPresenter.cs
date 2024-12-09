@@ -9,11 +9,13 @@ namespace MVP.Presenters
 	{
 		private readonly IMainMenuView _view;
 		private readonly LeaderboardPresenter _leaderboardPresenter;
+		private readonly LoadingManager _loadingManager;
 
-		public MainMenuPresenter(IMainMenuView view, LeaderboardPresenter leaderboardPresenter)
+		public MainMenuPresenter(IMainMenuView view, LeaderboardPresenter leaderboardPresenter, LoadingManager loadingManager)
 		{
 			_view = view;
 			_leaderboardPresenter = leaderboardPresenter;
+			_loadingManager = loadingManager;
 
 			_view.OnStartGameClicked += HandleStartGame;
 			_view.OnLeaderboardClicked += HandleShowLeaderboard;
@@ -30,13 +32,13 @@ namespace MVP.Presenters
 		private void HandeBackToMenu()
 		{
 			PlayerInputService.OnDipsoseInputService.Invoke();
-			SceneManager.LoadScene(0);
+			_loadingManager.LoadScene("MainMenu");
 			HandleHideLeaderboardAndGame();
 		}
 
 		private void HandleStartGame()
 		{
-			SceneManager.LoadScene(1);
+			_loadingManager.LoadScene("Game");
 		}
 
 		private void HandleShowLeaderboard()

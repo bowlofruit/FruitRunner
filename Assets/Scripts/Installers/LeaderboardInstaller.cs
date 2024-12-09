@@ -1,4 +1,5 @@
-﻿using MVP.Presenters;
+﻿using MVP.Models;
+using MVP.Presenters;
 using MVP.Views;
 using UnityEngine;
 using Zenject;
