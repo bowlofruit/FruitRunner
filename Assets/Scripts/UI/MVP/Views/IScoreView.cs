@@ -1,7 +1,11 @@
-﻿namespace MVP.Views
+﻿using ECS.Components;
+using System.Collections.Generic;
+
+namespace MVP.Views
 {
 	public interface IScoreView
 	{
-		public void SetScoreText(string score);
+		void SetScoreText(string score);
+		void SetFruitCounts(Dictionary<FruitType, int> fruitCounts);
 	}
 }

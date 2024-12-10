@@ -1,11 +1,11 @@
+using ECS.Components;
 using MVP.Models;
 using MVP.Views;
-using System.Linq;
 using Zenject;
 
 namespace MVP.Presenters
 {
-	public class ScorePresenter : IInitializable
+	public class ScorePresenter
 	{
 		private readonly ScoreModel _scoreModel;
 		private readonly IScoreView _scoreView;
@@ -14,16 +14,14 @@ namespace MVP.Presenters
 		{
 			_scoreModel = new ScoreModel();
 			_scoreView = scoreView;
-		}
 
-		public void Initialize()
-		{
 			UpdateScoreUI();
 		}
 
 		private void UpdateScoreUI()
 		{
 			_scoreView.SetScoreText(_scoreModel.Score.ToString());
+			_scoreView.SetFruitCounts(_scoreModel.FruitCounts);
 		}
 
 		public void OnScoreChanged()
@@ -31,9 +29,10 @@ namespace MVP.Presenters
 			UpdateScoreUI();
 		}
 
-		public void AddScore(int amount)
+		public void AddScore(int amount, FruitType type)
 		{
 			_scoreModel.AddScore(amount);
+			_scoreModel.IncrementFruitCount(type);
 			OnScoreChanged();
 		}
 	}

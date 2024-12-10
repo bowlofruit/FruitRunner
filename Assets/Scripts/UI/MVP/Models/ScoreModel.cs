@@ -1,45 +1,30 @@
-using System;
-using System.Collections;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using ECS.Components;
+using System.Collections.Generic;
 
 namespace MVP.Models
 {
 	public class ScoreModel
-    {
-        public int Score { get; private set; }
-
-        public void SetScore(int score)
-        {
-            Score = score;
-        }
-
-        public void AddScore(int amount)
-        {
-            Score += amount;
-        }
-	}
-
-	public class LoadingScreenModel
 	{
-		public IEnumerator LoadSceneAsync(string sceneName, Action<float> onProgressUpdated, Action onComplete)
+		public int Score { get; private set; }
+		public Dictionary<FruitType, int> FruitCounts { get; private set; }
+
+		public ScoreModel()
 		{
-			var asyncOperation = SceneManager.LoadSceneAsync(sceneName);
-			asyncOperation.allowSceneActivation = false;
-
-			while (!asyncOperation.isDone)
+			FruitCounts = new Dictionary<FruitType, int>();
+			foreach (FruitType type in System.Enum.GetValues(typeof(FruitType)))
 			{
-				float progress = Mathf.Clamp01(asyncOperation.progress / 0.9f);
-				onProgressUpdated?.Invoke(progress);
-
-				if (asyncOperation.progress >= 0.9f)
-				{
-					onComplete?.Invoke();
-					asyncOperation.allowSceneActivation = true;
-				}
-
-				yield return null;
+				FruitCounts[type] = 0;
 			}
+		}
+
+		public void AddScore(int amount)
+		{
+			Score += amount;
+		}
+
+		public void IncrementFruitCount(FruitType type)
+		{
+			FruitCounts[type]++;
 		}
 	}
 }

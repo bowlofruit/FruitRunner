@@ -86,7 +86,7 @@ public class ColliderSystem : AEntitySetSystem<float>
 
 			player.CollectedFruits += fruit.Price;
 
-			_scorePresenter.AddScore(fruit.Price);
+			_scorePresenter.AddScore(fruit.Price, fruit.Type);
 
 			if (otherEntity.Has<GameObjectComponent>())
 			{

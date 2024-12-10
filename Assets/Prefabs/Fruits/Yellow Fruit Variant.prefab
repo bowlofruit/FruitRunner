@@ -13,6 +13,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Yellow Fruit Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5241846546358997887, guid: ab52eb8632db8904fa347425bb929886,
+        type: 3}
+      propertyPath: _fruitType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6058433486822197436, guid: ab52eb8632db8904fa347425bb929886,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
