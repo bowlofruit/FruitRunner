@@ -37,7 +37,7 @@ This project is an implementation of a "Runner" game built using Unity and the *
 1. Install Unity (version 2021.3 LTS or newer).
 2. Clone this repository:
    ```bash
-   git clone https://github.com/username/runner-game.git
+   git clone https://github.com/bowlofruit/FruitRunner.git
    ```
 3. Open the project in Unity.
 
